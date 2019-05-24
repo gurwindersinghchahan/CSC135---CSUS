@@ -1,0 +1,67 @@
+% ----- 1 -----
+
+pingPongMaster(P) :- game(M,P,Q,SP,SQ), game(N,P,R,TP,TR), M\=N, D is SP-SQ, D>5, E is TP-TR, E>5.
+pingPongMaster(P) :- game(M,P,Q,SP,SQ), game(N,R,P,TR,TP), M\=N, D is SP-SQ, D>5, E is TP-TR, E>5.
+pingPongMaster(P) :- game(M,Q,P,SQ,SP), game(N,P,R,TP,TR), M\=N, D is SP-SQ, D>5, E is TP-TR, E>5.
+pingPongMaster(P) :- game(M,Q,P,SQ,SP), game(N,R,P,TR,TP), M\=N, D is SP-SQ, D>5, E is TP-TR, E>5.
+
+% ----- 2 -----
+
+getsMailBefore(P1,P2) :- deliver(C,P1,P3), getsMailBefore(P3,P2).
+getsMailBefore(P1,P2) :- deliver(C,P1,P2).
+
+% ----- 3 -----
+
+count_occur([],0).
+count_occur([[]],0).
+count_occur([[X|Y]],1).
+count_occur([[]|R],C) :- count_occur(R,C).
+count_occur([[X|Y]|R],C) :- count_occur(R,D), C is D+1.
+
+% ----- 4 -----
+
+listsMax([],[],[]).
+listsMax([A|B],[C|D],[A|F]) :- A>C, listsMax(B,D,F).
+listsMax([A|B],[C|D],[C|F]) :- C>=A, listsMax(B,D,F).
+
+% ----- 5 -----
+
+cycler(L,C,A) :- additionCycle(L,C,A).
+
+additionCycle([X|[]],C,A) :- A is C+X.
+additionCycle([X|[Y|Z]],C,A) :- D is C+X, subtractCycle([Y|Z],D,A).
+
+subtractCycle([X|[]],C,A) :- A is C-X.
+subtractCycle([X|[Y|Z]],C,A) :- D is C-X, multiplyCycle([Y|Z],D,A).
+
+multiplyCycle([X|[]],C,A) :- A is C*X.
+multiplyCycle([X|[Y|Z]],C,A) :- D is C*X, additionCycle([Y|Z],D,A).
+
+% ----- 6 -----
+
+digit(1).  digit(2).  digit(3).  digit(4).  digit(5).
+digit(6).  digit(7).  digit(8).  digit(9).  digit(0).
+somefiles(S,O,M,E,F,I,L) :-
+  digit(S), digit(O), digit(M), digit(E), digit(F), digit(I), digit(L), digit(Z),
+  S\=O, S\=M, S\=E, S\=F, S\=I, S\=L,
+  O\=M, O\=E, O\=F, O\=I, O\=L,
+  M\=E, M\=F, M\=I, M\=L,
+  E\=F, E\=I, E\=L,
+  F\=I, F\=L,
+  I\=L,
+  IZMM is I*1000+Z*100+M*10+M,
+  OIIES is O*10000+I*1000+I*100+E*10+S,
+  MMIIS is M*10000+M*1000+I*100+I*10+S,
+  SOMEFILES is S*100000000+O*10000000+M*1000000+E*100000+F*10000+I*1000+L*100+E*10+S,
+  PROD1 is IZMM * S,
+  PROD2 is IZMM * OIIES,
+  MMIIS = PROD1,
+  SOMEFILES = PROD2.
+
+%         The above approach finds S=5, O=8, M=1, E=2, F=4, I=6, L=1
+%         which is the only solution.  It takes a while to find it, and
+%         then a little while longer to say there aren't any other solutions.
+%         This is because it has to generate and test a huge number of
+%         permutations of the valid digits.  With some changes to the code,
+%         that narrow the search, it could be made more efficient.
+  
